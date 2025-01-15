@@ -1,3 +1,4 @@
+//import java.io.File;
 //import java.util.Scanner;
 //
 //public class Main {
@@ -25,7 +26,20 @@
 //                    if (command.equals("echo") || command.equals("exit") || command.equals("type")) {
 //                        System.out.println(command + " is a shell builtin");
 //                    } else {
-//                        System.out.println(command + ": not found");
+//                        String path = System.getenv("PATH");
+//                        String[] directories = path.split(":");
+//                        boolean found = false;
+//                        for (String dir : directories) {
+//                            File file = new File(dir, command);
+//                            if (file.exists() && file.canExecute()) {
+//                                System.out.println(command + " is " + file.getAbsolutePath());
+//                                found = true;
+//                                break;
+//                            }
+//                        }
+//                        if (!found) {
+//                            System.out.println(command + ": not found");
+//                        }
 //                    }
 //                } else {
 //                    System.out.println("Usage: type <command>");
@@ -39,8 +53,8 @@
 //        }
 //    }
 //}
-
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -87,7 +101,31 @@ public class Main {
                     System.out.println("Usage: type <command>");
                 }
             } else {
-                System.out.println(input + ": command not found");
+                // Handle external commands
+                String[] commandParts = input.split(" ");
+                String command = commandParts[0];
+                String path = System.getenv("PATH");
+                String[] directories = path.split(":");
+                boolean found = false;
+                for (String dir : directories) {
+                    File file = new File(dir, command);
+                    if (file.exists() && file.canExecute()) {
+                        found = true;
+                        try {
+                            ProcessBuilder pb = new ProcessBuilder(commandParts);
+                            pb.directory(new File(System.getProperty("user.dir")));
+                            pb.inheritIO();
+                            Process process = pb.start();
+                            process.waitFor();
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    }
+                }
+                if (!found) {
+                    System.out.println(command + ": command not found");
+                }
             }
 
             System.out.print("$ ");

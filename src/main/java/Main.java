@@ -27,12 +27,21 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 
-        while (!input.equals("exit")) {
-            System.out.println(input + ": command not found");
+        while (true) {
+            if (input.startsWith("exit")) {
+                String[] parts = input.split(" ");
+                if (parts.length == 2 && parts[1].equals("0")) {
+                    scanner.close();
+                    System.exit(0);
+                } else {
+                    System.out.println("Usage: exit 0");
+                }
+            } else {
+                System.out.println(input + ": command not found");
+            }
 
             System.out.print("$ ");
             input = scanner.nextLine();
         }
-        scanner.close();
     }
 }

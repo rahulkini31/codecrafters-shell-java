@@ -65,6 +65,8 @@
 //    }
 //}
 
+//
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,52 +76,39 @@ public class InputParser {
         String commandString = "";
         int i = 0;
         StringBuilder sb = new StringBuilder();
+        boolean inQuotes = false;
 
         while (i < input.length()) {
-            // Remove preceding whitespace
-            while (i < input.length() && Character.isWhitespace(input.charAt(i))) {
+            char c = input.charAt(i);
+
+            if (c == '\'') {
+                inQuotes = !inQuotes;
                 i++;
+                continue;
             }
 
-            // Get command
+            if (Character.isWhitespace(c) && !inQuotes) {
+                if (sb.length() > 0) {
+                    if (commandString.isEmpty()) {
+                        commandString = sb.toString();
+                    } else {
+                        argsList.add(sb.toString());
+                    }
+                    sb = new StringBuilder();
+                }
+                i++;
+                continue;
+            }
+
+            sb.append(c);
+            i++;
+        }
+
+        if (sb.length() > 0) {
             if (commandString.isEmpty()) {
-                while (i < input.length() && !Character.isWhitespace(input.charAt(i))) {
-                    sb.append(input.charAt(i));
-                    i++;
-                }
                 commandString = sb.toString();
-                sb = new StringBuilder();
-            }
-
-            // Get single quote arg
-            if (i < input.length() && input.charAt(i) == '\'') {
-                i++;
-                sb = new StringBuilder();
-                while (i < input.length() && input.charAt(i) != '\'') {
-                    sb.append(input.charAt(i));
-                    i++;
-                }
-                i++; // Skip closing quote
-                while (i < input.length() && !Character.isWhitespace(input.charAt(i)) && input.charAt(i) != '\'') {
-                    sb.append(input.charAt(i));
-                    i++;
-                }
+            } else {
                 argsList.add(sb.toString());
-            }
-
-            // Get unquoted arg
-            if (i < input.length() && !Character.isWhitespace(input.charAt(i)) && input.charAt(i) != '\'') {
-                sb = new StringBuilder();
-                while (i < input.length() && !Character.isWhitespace(input.charAt(i)) && input.charAt(i) != '\'') {
-                    sb.append(input.charAt(i));
-                    i++;
-                }
-                argsList.add(sb.toString());
-            }
-
-            // Skip whitespace between args
-            while (i < input.length() && Character.isWhitespace(input.charAt(i))) {
-                i++;
             }
         }
 

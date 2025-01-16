@@ -140,7 +140,7 @@ public class Main {
                 if (parts.length == 2) {
                     String command = parts[1];
                     // Check if the command is a shell builtin
-                    if (command.equals("echo") || command.equals("exit") || command.equals("type")) {
+                    if (command.equals("echo") || command.equals("exit") || command.equals("type") || command.equals("pwd")) {
                         System.out.println(command + " is a shell builtin");
                     } else {
                         // Search for the command in the directories listed in the PATH environment variable

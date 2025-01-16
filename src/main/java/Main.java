@@ -107,45 +107,43 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public  static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
+        // Print the shell prompt
+        System.out.print("$ ");
 
-        // print the shell prompt
-        System.out.print("$: ");
-
-        // create a scanner object to read user ioput
+        // Create a Scanner object to read user input
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 
-        // Starting an infinite loop to continuously read and process user input.
-        while (True) {
-            // check if the input starts with "exit"
+        // Start an infinite loop to continuously read and process user input
+        while (true) {
+            // Check if the input starts with "exit"
             if (input.startsWith("exit")) {
                 String[] parts = input.split(" ");
-                // If the command is Exit 0, then terminate the program with status code 0
+                // If the command is "exit 0", terminate the program with status code 0
                 if (parts.length == 2 && parts[1].equals("0")) {
                     scanner.close();
                     System.exit(0);
                 } else {
-                    // Print useage message if the command is not "exit 0"
+                    // Print usage message if the command is not "exit 0"
                     System.out.println("Usage: exit 0");
                 }
             }
-
-            // Check if the input starts with "type"
+            // Check if the input starts with "echo"
             else if (input.startsWith("echo")) {
                 // Print the text following the "echo" command
-                System.out.println(input.substring((5)));
+                System.out.println(input.substring(5));
             }
             // Check if the input starts with "type"
             else if (input.startsWith("type")) {
                 String[] parts = input.split(" ");
                 if (parts.length == 2) {
                     String command = parts[1];
-                    // check if the command is a shell builtin
+                    // Check if the command is a shell builtin
                     if (command.equals("echo") || command.equals("exit") || command.equals("type")) {
                         System.out.println(command + " is a shell builtin");
                     } else {
-                        // Search for the command in the directories listed in the PATH env variables
+                        // Search for the command in the directories listed in the PATH environment variable
                         String path = System.getenv("PATH");
                         String[] directories = path.split(":");
                         boolean found = false;
@@ -204,6 +202,7 @@ public class Main {
                     System.out.println(command + ": command not found");
                 }
             }
+
             // Print the shell prompt again for the next command
             System.out.print("$ ");
             // Read the next user input
@@ -211,30 +210,3 @@ public class Main {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

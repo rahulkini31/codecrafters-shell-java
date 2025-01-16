@@ -71,11 +71,16 @@
 //            else if (input.startsWith("cd")) {
 //                String[] parts = input.split(" ");
 //                if (parts.length == 2) {
-//                    File dir = new File(parts[1]);
+//                    String path = parts[1];
+//                    if (path.equals("~")) {
+//                        // Change to the user's home directory
+//                        path = System.getenv("HOME");
+//                    }
+//                    File dir = new File(path);
 //                    try {
 //                        // Handle relative paths
 //                        if (!dir.isAbsolute()) {
-//                            dir = new File(System.getProperty("user.dir"), parts[1]);
+//                            dir = new File(System.getProperty("user.dir"), path);
 //                        }
 //                        // Check if the directory exists and is a directory
 //                        if (dir.exists() && dir.isDirectory()) {
@@ -83,7 +88,7 @@
 //                            System.setProperty("user.dir", dir.getCanonicalPath());
 //                        } else {
 //                            // Print error message if the directory does not exist
-//                            System.out.println("cd: " + parts[1] + ": No such file or directory");
+//                            System.out.println("cd: " + path + ": No such file or directory");
 //                        }
 //                    } catch (IOException e) {
 //                        e.printStackTrace();
@@ -138,6 +143,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
+    private static String previousDir = System.getProperty("user.dir");
+
     public static void main(String[] args) throws Exception {
         // Print the shell prompt
         System.out.print("$ ");
@@ -210,6 +217,13 @@ public class Main {
                     if (path.equals("~")) {
                         // Change to the user's home directory
                         path = System.getenv("HOME");
+                    } else if (path.startsWith("~")) {
+                        // Change to the specified user's home directory
+                        String username = path.substring(1);
+                        path = "/home/" + username;
+                    } else if (path.equals("-")) {
+                        // Change to the previous working directory
+                        path = previousDir;
                     }
                     File dir = new File(path);
                     try {
@@ -220,6 +234,7 @@ public class Main {
                         // Check if the directory exists and is a directory
                         if (dir.exists() && dir.isDirectory()) {
                             // Change the current working directory
+                            previousDir = System.getProperty("user.dir");
                             System.setProperty("user.dir", dir.getCanonicalPath());
                         } else {
                             // Print error message if the directory does not exist
@@ -228,6 +243,9 @@ public class Main {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                } else if (parts.length > 2) {
+                    // Print error message if more than one argument is provided
+                    System.out.println("cd: too many arguments");
                 } else {
                     // Print usage message if the command format is incorrect
                     System.out.println("Usage: cd <directory>");

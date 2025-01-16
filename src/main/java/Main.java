@@ -138,6 +138,46 @@
 //    }
 //}
 
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.Scanner;
+//
+//public class Main {
+//    private static String previousDir = System.getProperty("user.dir");
+//
+//    public static String getPreviousDir() {
+//        return previousDir;
+//    }
+//
+//    public static void setPreviousDir(String dir) {
+//        previousDir = dir;
+//    }
+//
+//    public static void main(String[] args) throws Exception {
+//        // Print the shell prompt
+//        System.out.print("$ ");
+//
+//        // Create a Scanner object to read user input
+//        Scanner scanner = new Scanner(System.in);
+//        String input = scanner.nextLine();
+//        PathEnv pathEnv = new PathEnv(); // Assuming PathEnv is a class that handles PATH environment
+//
+//        // Start an infinite loop to continuously read and process user input
+//        while (true) {
+//            InputParser parser = new InputParser();
+//            Command command = parser.parseCommand(input, pathEnv);
+//
+//            // Execute the parsed command
+//            command.execute();
+//
+//            // Print the shell prompt again for the next command
+//            System.out.print("$ ");
+//            // Read the next user input
+//            input = scanner.nextLine();
+//        }
+//    }
+//}
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -168,12 +208,49 @@ public class Main {
             Command command = parser.parseCommand(input, pathEnv);
 
             // Execute the parsed command
-            command.execute();
+            if (command instanceof UnknownCommand) {
+                executeExternalCommand(input);
+            } else {
+                command.execute();
+            }
 
             // Print the shell prompt again for the next command
             System.out.print("$ ");
             // Read the next user input
             input = scanner.nextLine();
+        }
+    }
+
+    private static void executeExternalCommand(String input) {
+        String[] commandParts = input.split(" ");
+        String command = commandParts[0];
+        String path = System.getenv("PATH");
+        String[] directories = path.split(":");
+        boolean found = false;
+
+        for (String dir : directories) {
+            File file = new File(dir, command);
+            // If the command is found and is executable, execute it
+            if (file.exists() && file.canExecute()) {
+                found = true;
+                try {
+                    // Create a ProcessBuilder to run the command with arguments
+                    ProcessBuilder pb = new ProcessBuilder(commandParts);
+                    pb.directory(new File(System.getProperty("user.dir")));
+                    pb.inheritIO();
+                    Process process = pb.start();
+                    // Wait for the process to complete
+                    process.waitFor();
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+
+        // Print not found message if the command is not found in PATH
+        if (!found) {
+            System.out.println(command + ": command not found");
         }
     }
 }

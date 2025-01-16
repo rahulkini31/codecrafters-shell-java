@@ -169,12 +169,11 @@ public class Main {
             }
             // Check if the input starts with "echo"
             else if (input.startsWith("echo")) {
-                // Print the text following the "echo" command, trimming single quotes if present
+                // Print the text following the "echo" command, preserving single quotes
                 String echoText = input.substring(5).trim();
-                // Normalize spaces and handle multiple quoted arguments
-                echoText = echoText.replaceAll("\\s+", " ");
-                echoText = echoText.replaceAll("'\\s*'", " ");
-                echoText = echoText.replaceAll("'", "");
+                if (echoText.startsWith("'") && echoText.endsWith("'")) {
+                    echoText = echoText.substring(1, echoText.length() - 1);
+                }
                 System.out.println(echoText);
             }
             // Check if the input starts with "type"
@@ -255,6 +254,29 @@ public class Main {
                     // Print usage message if the command format is incorrect
                     System.out.println("Usage: cd <directory>");
                 }
+            }
+            // Check if the input starts with "cat"
+            else if (input.startsWith("cat")) {
+                String[] parts = input.split(" ");
+                for (int i = 1; i < parts.length; i++) {
+                    String filePath = parts[i];
+                    if (filePath.startsWith("'") && filePath.endsWith("'")) {
+                        filePath = filePath.substring(1, filePath.length() - 1);
+                    }
+                    File file = new File(filePath);
+                    if (file.exists() && file.isFile()) {
+                        try (Scanner fileScanner = new Scanner(file)) {
+                            while (fileScanner.hasNextLine()) {
+                                System.out.print(fileScanner.nextLine() + " ");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        System.out.println("cat: " + filePath + ": No such file or directory");
+                    }
+                }
+                System.out.println();
             }
             // Handle external commands
             else {

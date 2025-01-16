@@ -169,9 +169,11 @@ public class Main {
             }
             // Check if the input starts with "echo"
             else if (input.startsWith("echo")) {
-                // Print the text following the "echo" command, normalizing spaces
+                // Print the text following the "echo" command, trimming single quotes if present
                 String echoText = input.substring(5).trim();
-                echoText = echoText.replaceAll("\\s+", " ");
+                if (echoText.startsWith("'") && echoText.endsWith("'")) {
+                    echoText = echoText.substring(1, echoText.length() - 1);
+                }
                 System.out.println(echoText);
             }
             // Check if the input starts with "type"

@@ -169,14 +169,17 @@ public class Main {
             }
             // Check if the input starts with "echo"
             else if (input.startsWith("echo")) {
-                // Print the text following the "echo" command, normalizing spaces
+                // Print the text following the "echo" command, normalizing spaces and handling quotes
                 String echoText = input.substring(5).trim();
-                if (echoText.startsWith("'") && echoText.endsWith("'")) {
-                    echoText = echoText.substring(1, echoText.length() - 1);
-                } else {
-                    echoText = echoText.replaceAll("\\s+", " ");
+                String[] parts = echoText.split("(?<=')\\s+(?=')|(?<=')\\s+|\\s+(?=')");
+                StringBuilder result = new StringBuilder();
+                for (String part : parts) {
+                    if (part.startsWith("'") && part.endsWith("'")) {
+                        part = part.substring(1, part.length() - 1);
+                    }
+                    result.append(part).append(" ");
                 }
-                System.out.println(echoText);
+                System.out.println(result.toString().trim());
             }
             // Check if the input starts with "type"
             else if (input.startsWith("type")) {

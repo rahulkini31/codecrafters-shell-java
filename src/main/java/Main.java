@@ -201,20 +201,17 @@ public class Main {
                 if (parts.length == 2) {
                     File dir = new File(parts[1]);
                     try {
+                        // Handle relative paths
+                        if (!dir.isAbsolute()) {
+                            dir = new File(System.getProperty("user.dir"), parts[1]);
+                        }
                         // Check if the directory exists and is a directory
                         if (dir.exists() && dir.isDirectory()) {
                             // Change the current working directory
                             System.setProperty("user.dir", dir.getCanonicalPath());
                         } else {
-                            // Handle relative paths
-                            dir = new File(System.getProperty("user.dir"), parts[1]);
-                            if (dir.exists() && dir.isDirectory()) {
-                                // Change the current working directory
-                                System.setProperty("user.dir", dir.getCanonicalPath());
-                            } else {
-                                // Print error message if the directory does not exist
-                                System.out.println("cd: " + parts[1] + ": No such file or directory");
-                            }
+                            // Print error message if the directory does not exist
+                            System.out.println("cd: " + parts[1] + ": No such file or directory");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

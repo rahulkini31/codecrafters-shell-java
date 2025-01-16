@@ -36,7 +36,7 @@
 //                if (parts.length == 2) {
 //                    String command = parts[1];
 //                    // Check if the command is a shell builtin
-//                    if (command.equals("echo") || command.equals("exit") || command.equals("type")) {
+//                    if (command.equals("echo") || command.equals("exit") || command.equals("type") || command.equals("pwd")) {
 //                        System.out.println(command + " is a shell builtin");
 //                    } else {
 //                        // Search for the command in the directories listed in the PATH environment variable
@@ -61,6 +61,11 @@
 //                    // Print usage message if the command format is incorrect
 //                    System.out.println("Usage: type <command>");
 //                }
+//            }
+//            // Check if the input is "pwd"
+//            else if (input.equals("pwd")) {
+//                // Print the current working directory
+//                System.out.println(System.getProperty("user.dir"));
 //            }
 //            // Handle external commands
 //            else {
@@ -170,6 +175,24 @@ public class Main {
             else if (input.equals("pwd")) {
                 // Print the current working directory
                 System.out.println(System.getProperty("user.dir"));
+            }
+            // Check if the input starts with "cd"
+            else if (input.startsWith("cd")) {
+                String[] parts = input.split(" ");
+                if (parts.length == 2) {
+                    File dir = new File(parts[1]);
+                    // Check if the directory exists and is a directory
+                    if (dir.exists() && dir.isDirectory()) {
+                        // Change the current working directory
+                        System.setProperty("user.dir", dir.getAbsolutePath());
+                    } else {
+                        // Print error message if the directory does not exist
+                        System.out.println("cd: " + parts[1] + ": No such file or directory");
+                    }
+                } else {
+                    // Print usage message if the command format is incorrect
+                    System.out.println("Usage: cd <directory>");
+                }
             }
             // Handle external commands
             else {

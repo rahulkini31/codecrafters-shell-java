@@ -199,20 +199,24 @@ public class Main {
                 String[] parts = input.split(" ");
                 if (parts.length == 2) {
                     File dir = new File(parts[1]);
-                    // Check if the directory exists and is a directory
-                    if (dir.exists() && dir.isDirectory()) {
-                        // Change the current working directory
-                        System.setProperty("user.dir", dir.getAbsolutePath());
-                    } else {
-                        // Handle relative paths
-                        dir = new File(System.getProperty("user.dir"), parts[1]);
+                    try {
+                        // Check if the directory exists and is a directory
                         if (dir.exists() && dir.isDirectory()) {
                             // Change the current working directory
-                            System.setProperty("user.dir", dir.getAbsolutePath());
+                            System.setProperty("user.dir", dir.getCanonicalPath());
                         } else {
-                            // Print error message if the directory does not exist
-                            System.out.println("cd: " + parts[1] + ": No such file or directory");
+                            // Handle relative paths
+                            dir = new File(System.getProperty("user.dir"), parts[1]);
+                            if (dir.exists() && dir.isDirectory()) {
+                                // Change the current working directory
+                                System.setProperty("user.dir", dir.getCanonicalPath());
+                            } else {
+                                // Print error message if the directory does not exist
+                                System.out.println("cd: " + parts[1] + ": No such file or directory");
+                            }
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 } else {
                     // Print usage message if the command format is incorrect

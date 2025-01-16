@@ -174,6 +174,8 @@ public class Main {
                 if (echoText.startsWith("'") && echoText.endsWith("'")) {
                     echoText = echoText.substring(1, echoText.length() - 1);
                 }
+                // Normalize spaces
+                echoText = echoText.replaceAll("\\s+", " ");
                 System.out.println(echoText);
             }
             // Check if the input starts with "type"

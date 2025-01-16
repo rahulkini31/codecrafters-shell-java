@@ -67,6 +67,8 @@
 
 //
 
+//
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +121,7 @@ public class InputParser {
             case "type" -> new TypeCommand(args, pathEnv);
             case "pwd" -> new PrintWorkingDirectoryCommand();
             case "cd" -> new ChangeDirectoryCommand(args);
+            case "cat" -> new CatCommand(args);
             default -> new UnknownCommand(commandString, args, pathEnv);
         };
         return command;

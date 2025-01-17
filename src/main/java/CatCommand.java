@@ -24,7 +24,7 @@ public class CatCommand implements Command {
             }
         }
         // Print the output and then a newline character
-        System.out.print(output.toString());
+        System.out.print(output);
         System.out.println();
     }
 }

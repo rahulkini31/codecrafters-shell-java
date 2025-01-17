@@ -1,67 +1,10 @@
-//import java.util.ArrayList;
+//// src/main/java/InputParser.java
 //import java.util.List;
 //
 //public class InputParser {
 //    public Command parseCommand(String input, PathEnv pathEnv) {
-//        List<String> argsList = new ArrayList<>();
-//        String commandString = "";
-//        int i = 0;
-//        StringBuilder sb = new StringBuilder();
-//        boolean inSingleQuotes = false;
-//        boolean inDoubleQuotes = false;
-//
-//        while (i < input.length()) {
-//            char c = input.charAt(i);
-//
-//            if (c == '\'') {
-//                if (inDoubleQuotes) {
-//                    sb.append(c);
-//                } else {
-//                    inSingleQuotes = !inSingleQuotes;
-//                }
-//                i++;
-//                continue;
-//            }
-//
-//            if (c == '\"') {
-//                inDoubleQuotes = !inDoubleQuotes;
-//                i++;
-//                continue;
-//            }
-//
-//            if (c == '\\' && inDoubleQuotes && i + 1 < input.length()) {
-//                char nextChar = input.charAt(i + 1);
-//                if (nextChar == '\\' || nextChar == '$' || nextChar == '\"' || nextChar == '\n') {
-//                    sb.append(nextChar);
-//                    i += 2;
-//                    continue;
-//                }
-//            }
-//
-//            if (Character.isWhitespace(c) && !inSingleQuotes && !inDoubleQuotes) {
-//                if (sb.length() > 0) {
-//                    if (commandString.isEmpty()) {
-//                        commandString = sb.toString();
-//                    } else {
-//                        argsList.add(sb.toString());
-//                    }
-//                    sb = new StringBuilder();
-//                }
-//                i++;
-//                continue;
-//            }
-//
-//            sb.append(c);
-//            i++;
-//        }
-//
-//        if (sb.length() > 0) {
-//            if (commandString.isEmpty()) {
-//                commandString = sb.toString();
-//            } else {
-//                argsList.add(sb.toString());
-//            }
-//        }
+//        List<String> argsList = QuoteHandler.parseArguments(input);
+//        String commandString = argsList.isEmpty() ? "" : argsList.remove(0);
 //
 //        String[] args = argsList.toArray(new String[0]);
 //        Command command = switch (commandString) {
@@ -76,9 +19,6 @@
 //        return command;
 //    }
 //}
-
-// src/main/java/InputParser.java
-
 
 // src/main/java/InputParser.java
 import java.util.List;

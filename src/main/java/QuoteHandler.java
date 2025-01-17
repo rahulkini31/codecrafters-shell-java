@@ -33,9 +33,12 @@ public class QuoteHandler {
                 continue;
             }
 
-            if (c == '\\' && !inSingleQuotes && !inDoubleQuotes) {
+            if (c == '\\' && !inDoubleQuotes) {
                 if (i + 1 < input.length()) {
                     char nextChar = input.charAt(i + 1);
+                    if (inSingleQuotes) {
+                        sb.append(c);
+                    }
                     sb.append(nextChar);
                     i += 2;
                     continue;
